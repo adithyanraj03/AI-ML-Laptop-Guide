@@ -23,12 +23,6 @@ The **primary motivation** behind this project was the desire to build and deplo
 *   **✨ Basic Animations:** Smooth transitions for modal display and subtle hover effects on table rows for a more polished user experience.
 *   **📱 Responsive Design:** Adapts reasonably well to different screen sizes thanks to Tailwind CSS utilities.
 
-## 🌐 Live Demo
-
-Experience the comparison table live on GitHub Pages here:
-
-[**https://adithyanraj03.github.io/AI-ML-Laptop-Guide/**](https://adithyanraj03.github.io/AI-ML-Laptop-Guide/)
-
 ## 🛠️ Technologies Used
 
 *   HTML5
