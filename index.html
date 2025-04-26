@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI/ML Laptop Comparison - Pro</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles for Modal and Animations */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's above everything */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto; /* Allow scrolling if content is tall */
+            position: relative; /* For absolute positioning of close button */
+            transform: translateY(20px); /* Start slightly lower */
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-backdrop.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-backdrop.visible .modal-content {
+            opacity: 1;
+            transform: translateY(0); /* Slide up to final position */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280; /* Gray-500 */
+        }
+
+        .close-button:hover {
+            color: #1f2937; /* Gray-800 */
+        }
+
+        /* Animation for row hover */
+        tbody tr {
+            transition: background-color 0.2s ease;
+            cursor: pointer; /* Indicate clickable rows */
+        }
+
+        tbody tr:hover {
+            background-color: #e5e7eb; /* Gray-200 */
+        }
+
+         /* Simple fade-in for initial content - requires JS to add class */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Ensure image placeholder styling */
+         .image-placeholder {
+             background-color: #e5e7eb; /* Gray-200 */
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 0.875rem; /* text-sm */
+             color: #6b7280; /* Gray-500 */
+             text-align: center;
+             padding: 8px;
+         }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+
+    <div id="app" class="fade-in">
+        <!-- The main table will be rendered here by the JavaScript -->
+    </div>
+
+    <!-- Modal Structure (hidden by default) -->
+    <div id="laptopModal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="close-button" id="closeModalBtn">&times;</button>
+            <h2 id="modalLaptopName" class="text-xl font-bold mb-4"></h2>
+             <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+                <div class="flex-shrink-0 w-full md:w-1/3 flex justify-center">
+                     <img id="modalLaptopImage" src="" alt="Laptop Image" class="max-w-full max-h-48 rounded-lg object-contain bg-gray-100 p-2" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZTkiLz4KICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNHB4IiBmaWxsPSIjYWJhZmFmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zem0iPklNQSBQTACEb2FkaW5nPC90ZXh0Pgo8L3N2Zz4=';">
+                </div>
+                <div id="modalLaptopDetails" class="flex-grow text-gray-700 w-full md:w-2/3">
+                    <!-- Details like price, VRAM, etc. will be populated here -->
+                </div>
+             </div>
+            <a id="modalOfficialWebsite" href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mt-4 inline-block">Official Website</a>
+        </div>
+    </div>
+
+
+    <script>
+        // Data array (copied directly from your React component)
+        const laptops = [
+          {
+            name: "ASUS ROG Flow Z13 AI MAX (2025)",
+            price: "$2,799 / ₹2,44,000 (128GB)",
+            vram: "Up to 96GB (shared, unified)",
+            bandwidth: "~512 GB/s (LPDDR5X-8000)",
+            modelSize: "70B+ LLMs, huge ViTs",
+            trainingSpeed: "~RTX 4060 (integrated GPU)",
+            frameworkSupport: "PyTorch (ROCm), ONNX, limited TensorFlow",
+            portability: "Excellent(1.2kg, 13.4\")",
+            aiInference: "Very good (NPU 50 TOPS, large RAM, AMD AI)",
+            cudaSupport: "No",
+            website: "https://rog.asus.com/laptops/rog-flow/rog-flow-z13-2025/",
+            imageUrl: "./images/laptop_1.png"
+          },
+          {
+            name: "Razer Blade 16 (RTX 5090)",
+            price: "$4,000+ / ₹3,50,000+",
+            vram: "24GB GDDR7 (dedicated)",
+            bandwidth: "~896 GB/s (GDDR7)",
+            modelSize: "7B–13B LLMs, large image models",
+            trainingSpeed: "Fastest (RTX 5090)",
+            frameworkSupport: "PyTorch, TensorFlow, JAX, ONNX, all CUDA",
+            portability: "Good (2.4kg, 16\")",
+            aiInference: "Excellent (CUDA, Tensor/TensorRT, fast)",
+            cudaSupport: "Yes",
+            website: "https://www.razer.com/gaming-laptops/Razer-Blade-16",
+            imageUrl: "./images/laptop_2.jpg"
+          },
+          {
+            name: "Eluktronics HydroX 16 G2",
+            price: "$4,000+ / ₹3,50,000+",
+            vram: "24GB GDDR7 (dedicated)",
+            bandwidth: "~896 GB/s (GDDR7)",
+            modelSize: "7B–13B LLMs, large image models",
+            trainingSpeed: "Fastest (RTX 5090, liquid cooled)",
+            frameworkSupport: "PyTorch, TensorFlow, JAX, ONNX, all CUDA",
+            portability: "Moderate (2.7kg, 16\")",
+            aiInference: "Excellent (CUDA, Tensor/TensorRT, fast)",
+            cudaSupport: "Yes",
+            website: "https://www.eluktronics.com/hydroc-16-g2-info",
+            imageUrl: "./images/laptop_3.png"
+          },
+          {
+            name: "MSI Titan 18 HX AI (RTX 5090)",
+            price: "$4,500+ / ₹4,00,000+",
+            vram: "24GB GDDR7 (dedicated)",
+            bandwidth: "~896 GB/s (GDDR7)",
+            modelSize: "7B–13B LLMs, large image models",
+            trainingSpeed: "Fastest (RTX 5090, best cooling)",
+            frameworkSupport: "PyTorch, TensorFlow, JAX, ONNX, all CUDA",
+            portability: "Poor (3.6kg, 18\")",
+            aiInference: "Excellent (CUDA, Tensor/TensorRT, fast)",
+            cudaSupport: "Yes",
+            website: "https://www.msi.com/Laptop/Titan-18-HX-AI",
+            imageUrl: "./images/laptop_4.jpg"
+          }
+        ];
+
+        // Helper function to determine highlight colors (translated to plain JS)
+        const getHighlightClass = (category, value) => {
+          if (category === 'portability') {
+            if (value.includes('Excellent')) return 'bg-green-100';
+            if (value.includes('Good')) return 'bg-green-50';
+            if (value.includes('Moderate')) return 'bg-yellow-50';
+            if (value.includes('Poor')) return 'bg-red-50';
+          }
+          if (category === 'aiInference') {
+            if (value.includes('Excellent')) return 'bg-green-100';
+            if (value.includes('Very good')) return 'bg-green-50';
+          }
+          if (category === 'trainingSpeed') {
+            if (value.includes('Fastest')) return 'bg-green-100';
+          }
+          if (category === 'modelSize') {
+            if (value.includes('70B+')) return 'bg-green-100';
+          }
+          return '';
+        };
+
+        // Function to render the table using plain JavaScript
+        function renderTable(laptopsData) {
+            const appDiv = document.getElementById('app'); // Get the container div
+
+            let tableHTML = `
+                <div class="p-4 max-w-full mx-auto lg:px-8">
+                    <h1 class="text-3xl font-extrabold mb-6 text-center text-gray-800">AI/ML Laptop Comparison (2025)</h1>
+                    <div class="overflow-x-auto rounded-lg shadow-xl border border-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 bg-white">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Laptop</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Price</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">VRAM / ML Memory</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Memory Bandwidth</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Max Model Size</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Training Speed</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Framework Support</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Portability</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">AI Inference</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">CUDA</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200" id="tableBody">
+            `; // Start building the HTML string
+
+            // Iterate over the laptops data and build table rows
+            laptopsData.forEach((laptop, index) => {
+                const rowClass = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                const modelSizeClass = getHighlightClass('modelSize', laptop.modelSize);
+                const trainingSpeedClass = getHighlightClass('trainingSpeed', laptop.trainingSpeed);
+                const portabilityClass = getHighlightClass('portability', laptop.portability);
+                const aiInferenceClass = getHighlightClass('aiInference', laptop.aiInference);
+                const cudaClass = laptop.cudaSupport === "Yes" ? "text-green-600 font-medium" : "text-red-600 font-medium";
+
+                tableHTML += `
+                    <tr class="${rowClass}" data-index="${index}"> <!-- Added data-index for easy lookup -->
+                        <td class="px-4 py-4">
+                          <div class="flex flex-col items-center">
+                            <div class="w-32 h-24 mb-2 overflow-hidden rounded bg-gray-100 flex items-center justify-center">
+                              <img
+                                src="${laptop.imageUrl}"
+                                alt="${laptop.name}"
+                                class="max-w-full max-h-full object-contain"
+                                onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZTkiLz4KICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNHB4IiBmaWxsPSIjYWJhZmFmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zem0iPklNQSBQTACEb2FkaW5nPC90ZXh0Pgo8L3N2Zz4=';"
+                              />
+                            </div>
+                            <div class="text-sm font-medium text-blue-700 text-center">${laptop.name}</div>
+                            <a
+                              href="${laptop.website}"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-xs text-blue-500 hover:underline mt-1"
+                              onclick="event.stopPropagation();" <!-- Prevent row click when clicking link -->
+                            >
+                              Official Website
+                            </a>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-800">${laptop.price}</td>
+                        <td class="px-4 py-4 text-sm text-gray-800">${laptop.vram}</td>
+                        <td class="px-4 py-4 text-sm text-gray-800">${laptop.bandwidth}</td>
+                        <td class="px-4 py-4 text-sm text-gray-800 ${modelSizeClass}">
+                          ${laptop.modelSize}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-800 ${trainingSpeedClass}">
+                          ${laptop.trainingSpeed}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-800">
+                          <div class="max-w-xs">${laptop.frameworkSupport}</div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-800 ${portabilityClass}">
+                          ${laptop.portability}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-800 ${aiInferenceClass}">
+                          ${laptop.aiInference}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-800">
+                          <span class="${cudaClass}">
+                            ${laptop.cudaSupport}
+                          </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-6 text-center italic">
+                        * Table compares AI/ML capabilities of high-end laptops as of April 2025. Click a row for more details.
+                    </div>
+                     <div class="text-xs text-gray-600 mt-2 text-center">
+                        made by Adithya N Raj
+                    </div>
+                </div>
+            `; // Close table structure and add footer
+
+            // Inject the generated HTML into the div
+            appDiv.innerHTML = tableHTML;
+        }
+
+        // --- Modal Functions ---
+        const modal = document.getElementById('laptopModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalLaptopName = document.getElementById('modalLaptopName');
+        const modalLaptopImage = document.getElementById('modalLaptopImage');
+        const modalLaptopDetails = document.getElementById('modalLaptopDetails');
+        const modalOfficialWebsite = document.getElementById('modalOfficialWebsite');
+
+
+        function showLaptopDetails(laptop) {
+            // Populate modal content
+            modalLaptopName.textContent = laptop.name;
+            modalLaptopImage.src = laptop.imageUrl;
+             modalLaptopImage.alt = laptop.name + " Image"; // Improve alt text
+             // Handle image error specifically for modal
+             modalLaptopImage.onerror = function() {
+                 this.onerror=null; // Prevent infinite loops
+                 this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMuorgvMjAwMC9zdmciPgoicmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2U5Ii8KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0cHgiIGZpbGw9IiNhYmFhZmFmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zem0iPklNQSBQTACEb2FkaW5nPC90ZXh0Pgo8L3N2Zz4=';
+                 this.classList.add('image-placeholder'); // Add placeholder styling class
+             };
+             modalLaptopImage.classList.remove('image-placeholder'); // Remove if previously added
+
+            // Generate detailed list (show all keys from the object)
+            let detailsHTML = '';
+            for (const key in laptop) {
+                if (key !== 'name' && key !== 'imageUrl' && key !== 'website') { // Exclude keys already used
+                    detailsHTML += `<p><strong class="font-semibold">${key.replace(/([A-Z])/g, ' $1').trim()}:</strong> ${laptop[key]}</p>`;
+                }
+            }
+            modalLaptopDetails.innerHTML = detailsHTML;
+
+            modalOfficialWebsite.href = laptop.website;
+
+            // Show the modal with animation
+            modal.classList.add('visible');
+             document.body.style.overflow = 'hidden'; // Prevent scrolling the background
+        }
+
+        function hideLaptopDetails() {
+            // Hide the modal with animation
+            modal.classList.remove('visible');
+             document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render the table initially
+            renderTable(laptops);
+
+            // Add fade-in class after rendering (optional)
+            document.getElementById('app').classList.add('fade-in');
+
+
+            // Event delegation for table row clicks
+            const tableBody = document.getElementById('tableBody');
+            if (tableBody) {
+                tableBody.addEventListener('click', (event) => {
+                    // Find the closest row (<tr>) to the clicked element
+                    const row = event.target.closest('tr');
+                    if (row && row.dataset.index) { // Check if a row with a data-index was clicked
+                        const index = parseInt(row.dataset.index, 10);
+                        if (!isNaN(index) && index >= 0 && index < laptops.length) {
+                             // Check if the click was on the website link, if so, let the default link behavior happen
+                             if (event.target.tagName === 'A') {
+                                 return; // Do nothing, the link click will handle navigation
+                             }
+                             // Otherwise, show the modal
+                            showLaptopDetails(laptops[index]);
+                        }
+                    }
+                });
+            }
+
+
+            // Close modal button listener
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', hideLaptopDetails);
+            }
+
+            // Close modal when clicking outside content (on backdrop)
+            if (modal) {
+                modal.addEventListener('click', (event) => {
+                    // Check if the click target is the backdrop itself, not the modal content
+                    if (event.target === modal) {
+                        hideLaptopDetails();
+                    }
+                });
+            }
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modal.classList.contains('visible')) {
+                    hideLaptopDetails();
+                }
+            });
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

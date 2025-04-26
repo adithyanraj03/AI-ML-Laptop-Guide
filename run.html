@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI/ML Laptop Comparison</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link to your custom CSS file -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100 antialiased">
+
+    <div id="app">
+        <!-- The main table will be rendered here by the JavaScript -->
+    </div>
+
+    <!-- Modal Structure (hidden by default) -->
+    <div id="laptopModal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="close-button" id="closeModalBtn">×</button>
+            <h2 id="modalLaptopName" class="text-xl font-bold mb-4 text-gray-800"></h2>
+             <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+                <div class="flex-shrink-0 w-full md:w-1/3 flex justify-center">
+                     <img id="modalLaptopImage" src="" alt="Laptop Image" class="max-w-full max-h-48 rounded-lg object-contain bg-gray-100 p-2">
+                </div>
+                <div id="modalLaptopDetails" class="flex-grow text-gray-700 w-full md:w-2/3 text-sm">
+                    <!-- Details like price, VRAM, etc. will be populated here -->
+                </div>
+             </div>
+            <a id="modalOfficialWebsite" href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline mt-4 inline-block text-sm">Official Website</a>
+        </div>
+    </div>
+
+    <!-- Link to your JavaScript files -->
+    <script src="js/data.js"></script> <!-- Load data first -->
+    <script src="js/main.js"></script> <!-- Then load the logic -->
+
+</body>
+</html>
