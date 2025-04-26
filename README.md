@@ -10,7 +10,7 @@ Experience the comparison table live on GitHub Pages here:
 
 ## ✨ Motivation
 
-The **primary motivation** behind this project was the desire to build and deploy a simple static application for **free** online. Realizing that **Git** and **GitHub Pages** offer an ideal platform for this, the project became a practical exercise specifically focused on learning and implementing that Git-based deployment workflow. 🤔 This comparison table served as the perfect, self-contained content to achieve that goal! 🚀
+As part of my personal research into finding the **best laptops for data science and machine learning tasks** in 2025, I compiled this comparison data. These findings represent the culmination of that research. To easily share and showcase these results online, and because a simple, static file is all that was needed, leveraging **Git** and **GitHub Pages** (a common step in modern dev workflows, often involving pipelines) seemed like the most straightforward and efficient approach for free deployment. 🤔 This project became a practical way to publish my research findings while simultaneously utilizing a robust version control and hosting solution. 🚀
 
 ![image](https://github.com/user-attachments/assets/979b6974-7b21-42c1-bf6d-e93a103b93bd)
 
